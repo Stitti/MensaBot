@@ -41,7 +41,6 @@ namespace MensaBot.Telegram
         private static string GetResponse(string message)
         {
             string[] args = message.Split(' ');
-            string response;
             switch (args[0])
             {
                 case "/canteens":

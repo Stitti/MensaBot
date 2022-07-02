@@ -17,7 +17,7 @@ namespace MensaBot.Telegram
                 return string.Empty;
 
             StringBuilder stringBuilder = new StringBuilder();
-            canteens.ForEach(x => stringBuilder.AppendLine($"{x.Id} - {x.Name} - {x.Address}"));
+            canteens.ForEach(x => stringBuilder.AppendLine($"{x.Id} - {x.Name}"));
             return stringBuilder.ToString();
         }
 
@@ -52,12 +52,14 @@ namespace MensaBot.Telegram
                 return $"{targetCanteen.Name} ist am  {dateTime.ToString("dd.MM.yyyy")} geschlossen.";
 
             List<Meal> meals = openMensa.GetMeals(targetCanteen.Id, dateTime);
-            return "";
+            StringBuilder stringBuilder = new StringBuilder($"Der Speiseplan für den {dateTime.ToString("dd.MM.yyyy")}");
+            meals.ForEach(x => stringBuilder.Append($"{Environment.NewLine}{x.Name}{Environment.NewLine}- Studenten: {x.Prices.Students}{Environment.NewLine}- Angestellte: {x.Prices.Employees}{Environment.NewLine}- Andere: {x.Prices.Others}"));
+            return stringBuilder.ToString();
         }
 
         private static bool TryParseArgument(string[] args, char argumentCode, out string result)
         {
-            result = null;
+            result = string.Empty;
             int index = (Array.IndexOf(args, $"-{argumentCode}") + 1);
             if (index == 0 || args.Length < index)
                 return false;
