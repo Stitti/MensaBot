@@ -1,9 +1,18 @@
-﻿// See https://aka.ms/new-console-template for more information
-using MensaBot.Telegram;
+﻿using MensaBot.Telegram;
+namespace MensaBot
+{
+    class Program
+    {
+        private static ManualResetEvent _Wait = new ManualResetEvent(false);
 
-Console.WriteLine("Initializing bot...");
-TelegramBot bot = new TelegramBot();
-Console.WriteLine("Initialized bot");
-bot.RunAsync();
-Console.WriteLine("Bot is running");
-Console.ReadKey();
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Initializing bot...");
+            TelegramBot bot = new TelegramBot();
+            Console.WriteLine("Initialized bot");
+            bot.RunAsync();
+            Console.WriteLine("Bot is running");
+            _Wait.WaitOne();
+        }
+    }
+}
