@@ -32,7 +32,6 @@ namespace MensaBot.Telegram
             secret = Environment.GetEnvironmentVariable("TELEGRAM_SECRET");
 #endif
             _BotClient = new TelegramBotClient(secret);
-
         }
 
         public async Task RunAsync()

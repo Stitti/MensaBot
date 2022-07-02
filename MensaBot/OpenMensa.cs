@@ -17,10 +17,15 @@ namespace MensaBot
             _HttpClient = new HttpClient() { BaseAddress = new Uri("https://openmensa.org/api/v2/") };
         }
 
+        ~ OpenMensa()
+        {
+            _HttpClient.Dispose();
+        }
+
         private T ConvertHttpResponse<T>(HttpResponseMessage httpResponse) where T : new()
         {
             if (httpResponse.IsSuccessStatusCode == false)
-                return default(T);
+                return new T();
 
             string json = httpResponse.Content.ReadAsStringAsync().Result;
             T item = new T();
@@ -30,7 +35,8 @@ namespace MensaBot
             }
             catch(Exception ex)
             {
-                string test = ex.Message;
+                Console.WriteLine($"OpenMensa::ConvertHttpResponse: {ex.Message}");
+                Console.WriteLine($"OpenMensa::ConvertHttpResponse: {ex.StackTrace}");
             }
 
             return item;

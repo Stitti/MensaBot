@@ -13,7 +13,7 @@ namespace MensaBot
         {
             OpenMensa openMensa = new OpenMensa();
             List<Canteen> canteens = openMensa.GetAllCanteens();
-            Canteen match = canteens.Where(x => input.Contains(x.Name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            Canteen match = canteens.FirstOrDefault(x => input.Contains(x.Name, StringComparison.OrdinalIgnoreCase));
             if (match != null)
                 return match;
 
@@ -23,7 +23,7 @@ namespace MensaBot
                 return null;
 
             match = canteens.FirstOrDefault(x => x.Name.Equals(stringMatch, StringComparison.Ordinal));
-            return (match == null) ? null : match;
+            return match ?? null;
 
         }
 
