@@ -11,10 +11,10 @@ namespace MensaBot.Models
     public class Prices
     {
         [DataMember(Name = "students")]
-        public double Students { get; set; }
+        public double? Students { get; set; }
         [DataMember(Name = "employees")]
-        public double Employees { get; set; }
+        public double? Employees { get; set; }
         [DataMember(Name = "others")]
-        public double Others { get; set; }
+        public double? Others { get; set; }
     }
 }

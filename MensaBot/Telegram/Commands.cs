@@ -9,13 +9,17 @@ namespace MensaBot.Telegram
 {
     internal class Commands
     {
-        public static string GetCanteens()
+        public static string GetCanteens(string[] args)
         {
+            if (args == null || args.Length == 0 || TryParseArgument(args, 'c', out string cityParameter) == false)
+                return "Bitte überprüfe die Parameter des Befehls";
+
             OpenMensa openMensa = new OpenMensa();
             List<Canteen> canteens = openMensa.GetAllCanteens();
             if (canteens == null || canteens.Count == 0)
-                return string.Empty;
+                return "Bitte überprüfe die Parameter des Befehls";
 
+            canteens = canteens.Where(x => x.City.Equals(cityParameter, StringComparison.OrdinalIgnoreCase)).ToList();
             StringBuilder stringBuilder = new StringBuilder();
             canteens.ForEach(x => stringBuilder.AppendLine($"{x.Id} - {x.Name}"));
             return stringBuilder.ToString();
@@ -23,15 +27,12 @@ namespace MensaBot.Telegram
 
         public static string GetMeals(string[] args)
         {
-            if (args == null || args.Length == 0)
-                return string.Empty;
-
-            if (TryParseArgument(args, 'c', out string canteenParameter) == false)
-                return string.Empty;
+            if (args == null || args.Length == 0 || TryParseArgument(args, 'c', out string canteenParameter) == false)
+                return "Bitte überprüfe die Parameter des Befehls";
 
             Canteen targetCanteen = GetTargetCanteen(canteenParameter);
             if (targetCanteen == null || targetCanteen == default)
-                return string.Empty;
+                return "Bitte überprüfe die Parameter des Befehls";
 
             DateTime dateTime;
             if (TryParseArgument(args, 'd', out string dateTimeParameter) == true)

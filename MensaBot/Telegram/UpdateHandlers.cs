@@ -22,7 +22,7 @@ namespace MensaBot.Telegram
             long chatId = message.Chat.Id;
 
             string response = GetResponse(messageText);
-            botClient.SendTextMessageAsync(chatId, "").Wait();
+            botClient.SendTextMessageAsync(chatId, response).Wait();
         }
 
         public static Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
@@ -44,7 +44,7 @@ namespace MensaBot.Telegram
             switch (args[0])
             {
                 case "/canteens":
-                    return Commands.GetCanteens();
+                    return Commands.GetCanteens(args.Skip(0).ToArray());
 
                 case "/meals":
                     return Commands.GetMeals(args.Skip(0).ToArray());

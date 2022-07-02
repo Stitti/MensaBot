@@ -23,7 +23,16 @@ namespace MensaBot
                 return default(T);
 
             string json = httpResponse.Content.ReadAsStringAsync().Result;
-            T item = JsonConvert.DeserializeObject<T>(json);
+            T item = new T();
+            try
+            {
+                item = JsonConvert.DeserializeObject<T>(json);
+            }
+            catch(Exception ex)
+            {
+                string test = ex.Message;
+            }
+
             return item;
         }
 
@@ -35,13 +44,13 @@ namespace MensaBot
 
         public Day GetDayInformation(int canteenId, DateTime dateTime)
         {
-            HttpResponseMessage httpResponse = _HttpClient.GetAsync($"canteens/{canteenId}/days/{dateTime}").Result;
+            HttpResponseMessage httpResponse = _HttpClient.GetAsync($"canteens/{canteenId}/days/{dateTime.ToString("dd-MM-yyyy")}").Result;
             return ConvertHttpResponse<Day>(httpResponse);
         }
 
         public List<Meal> GetMeals(int canteenId, DateTime dateTime)
         {
-            HttpResponseMessage httpResponse = _HttpClient.GetAsync($"canteens/{canteenId}/days/{dateTime}/meals").Result;
+            HttpResponseMessage httpResponse = _HttpClient.GetAsync($"canteens/{canteenId}/days/{dateTime.ToString("dd-MM-yyyy")}/meals").Result;
             return ConvertHttpResponse<List<Meal>>(httpResponse);
         }
     }

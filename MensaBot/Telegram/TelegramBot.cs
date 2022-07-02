@@ -19,7 +19,6 @@ namespace MensaBot.Telegram
     public class TelegramBot
     {
         private readonly TelegramBotClient _BotClient;
-        private readonly CancellationTokenSource _Cts;
 
         public TelegramBot()
         {
@@ -33,19 +32,26 @@ namespace MensaBot.Telegram
             secret = Environment.GetEnvironmentVariable("TELEGRAM_SECRET");
 #endif
             _BotClient = new TelegramBotClient(secret);
-            _Cts = new CancellationTokenSource();
+
+        }
+
+        public async Task RunAsync()
+        {
+            using CancellationTokenSource cts = new CancellationTokenSource();
 
             ReceiverOptions receiverOptions = new ReceiverOptions
             {
-                AllowedUpdates = Array.Empty<UpdateType>() // receive all update types
+                AllowedUpdates = new UpdateType[] { UpdateType.Message }
             };
 
             _BotClient.StartReceiving(
                 updateHandler: UpdateHandlers.HandleUpdateAsync,
                 pollingErrorHandler: UpdateHandlers.HandlePollingErrorAsync,
                 receiverOptions: receiverOptions,
-                cancellationToken: _Cts.Token
+                cancellationToken: cts.Token
             );
+
+            User user = await _BotClient.GetMeAsync();
         }
     }
 }
