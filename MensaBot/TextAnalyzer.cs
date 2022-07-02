@@ -9,32 +9,25 @@ namespace MensaBot
 {
     public class TextAnalyzer
     {
-        public Tuple<int, DateTime> Run(string input)
-        {
-            int canteenId = GetCanteenFromString(input);
-            DateTime dateTime = GetDateFromString(input);
-            return new Tuple<int, DateTime>(canteenId, dateTime);
-        }
-
-        private int GetCanteenFromString(string input)
+        public static Canteen GetCanteenFromString(string input)
         {
             OpenMensa openMensa = new OpenMensa();
             List<Canteen> canteens = openMensa.GetAllCanteens();
             Canteen match = canteens.Where(x => input.Contains(x.Name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
             if (match != null)
-                return match.Id;
+                return match;
 
             List<Tuple<int, string>> levenStheinResults = canteens.Select(x => ComputeLevensthein(x.Name, input)).ToList();
             string stringMatch = levenStheinResults.OrderByDescending(x => x.Item1).FirstOrDefault()?.Item2;
             if (string.IsNullOrWhiteSpace(stringMatch))
-                return -1;
+                return null;
 
             match = canteens.FirstOrDefault(x => x.Name.Equals(stringMatch, StringComparison.Ordinal));
-            return (match == null) ? -1 : match.Id;
+            return (match == null) ? null : match;
 
         }
 
-        private Tuple<int, string> ComputeLevensthein(string mensaName, string inputText)
+        private static Tuple<int, string> ComputeLevensthein(string mensaName, string inputText)
         {
             int n = mensaName.Length;
             int m = inputText.Length;
@@ -73,7 +66,7 @@ namespace MensaBot
             return new Tuple<int, string>(d[n, m], mensaName);
         }
 
-        private DateTime GetDateFromString(string input)
+        public static DateTime GetDateFromString(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
                 return DateTime.MinValue;
@@ -89,12 +82,8 @@ namespace MensaBot
                     return DateTime.UtcNow.AddDays(1);
             }
 
-            string[] textParts = input.Split(' ');
-            foreach(string part in textParts)
-            {
-                if (DateTime.TryParse(part, out DateTime date) == true)
-                    return date;
-            }
+            if (DateTime.TryParse(input, out DateTime date) == true)
+                return date;
 
             return DateTime.UtcNow;
         }
